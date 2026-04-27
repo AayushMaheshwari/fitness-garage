@@ -1,5 +1,9 @@
 package com.project.fitness.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import com.project.fitness.dto.RecommendationRequestDTO;
@@ -57,5 +61,10 @@ public class RecommendationService {
         responseDTO.setCreatedAt(recommendation.getCreatedAt());
         responseDTO.setUpdatedAt(recommendation.getUpdatedAt());
         return responseDTO;
+    }
+
+    public List<RecommendationResponseDTO> getUserRecommendations(String userId) {
+        List<Recommendation> recommendations = recommendationRepository.findByUserId(userId);
+        return recommendations.stream().map(this::mapToResponseDTO).collect(Collectors.toList());
     }
 }

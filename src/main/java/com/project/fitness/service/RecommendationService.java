@@ -67,4 +67,9 @@ public class RecommendationService {
         List<Recommendation> recommendations = recommendationRepository.findByUserId(userId);
         return recommendations.stream().map(this::mapToResponseDTO).collect(Collectors.toList());
     }
+
+    public List<RecommendationResponseDTO> getActivityRecommendations(String activityId) {
+        List<Recommendation> recommendations = recommendationRepository.findByActivityId(activityId);
+        return recommendations.stream().map(this::mapToResponseDTO).collect(Collectors.toList());
+    }
 }

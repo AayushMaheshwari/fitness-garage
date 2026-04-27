@@ -37,7 +37,7 @@ public class RecommendationController {
 
     // @GetMapping("/activity/{activityId}")
     // public ResponseEntity<List<RecommendationResponseDTO>> getActivityRecommendations(@PathVariable String activityId) {
-    //     return ResponseEntity.ok(recommendationService.getActivityRecommendations(activityId)); heelo
+    //     return ResponseEntity.ok(recommendationService.getActivityRecommendations(activityId)); heelooo
     // }
 
 }

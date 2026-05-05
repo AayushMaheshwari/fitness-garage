@@ -24,7 +24,7 @@ public class RecommendationController {
 
     private final RecommendationService recommendationService;
 
-    @PostMapping("/generate")
+    @PostMapping("/admin/generate")
     public ResponseEntity<RecommendationResponseDTO> generateRecommendations(
             @RequestBody RecommendationRequestDTO request) {
         return ResponseEntity.ok(recommendationService.generateRecommendations(request));

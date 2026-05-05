@@ -15,23 +15,29 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
-        http.authorizeHttpRequests(authorizeRequests -> 
-            authorizeRequests.anyRequest().authenticated()
-        );
-        http.httpBasic(Customizer.withDefaults());
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(
+                        authorizeRequests -> authorizeRequests
+                                .requestMatchers("/api/recommendations/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/api/recommendations/**").hasAnyRole("USER", "ADMIN")
+                                .anyRequest().authenticated()
+                )
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         UserDetails user1 = User.withUsername("user1")
-        .password("{noop}password1")
-        .build();
+                .password("{noop}password1")
+                .roles("ADMIN")
+                .build();
 
         UserDetails user2 = User.withUsername("user2")
-        .password("{noop}password2")
-        .build();
+                .password("{noop}password2")
+                .roles("USER")
+                .build();
 
         return new InMemoryUserDetailsManager(user1, user2);
     }

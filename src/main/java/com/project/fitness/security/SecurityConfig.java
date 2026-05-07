@@ -1,5 +1,8 @@
 package com.project.fitness.security;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,12 +13,16 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private DataSource datasource;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -31,16 +38,20 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user1 = User.withUsername("user1")
-                .password("{noop}password1")
+        UserDetails user1 = User.withUsername("admin1")
+                .password("{noop}adminpassword1")
                 .roles("ADMIN")
                 .build();
 
-        UserDetails user2 = User.withUsername("user2")
-                .password("{noop}password2")
+        UserDetails user2 = User.withUsername("user1")
+                .password("{noop}userpassword1")
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(user1, user2);
+        //return new InMemoryUserDetailsManager(user1, user2);
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(datasource);
+        userDetailsManager.createUser(user1);
+        userDetailsManager.createUser(user2);
+        return userDetailsManager;
     }
 }

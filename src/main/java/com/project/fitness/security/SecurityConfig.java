@@ -50,8 +50,12 @@ public class SecurityConfig {
 
         //return new InMemoryUserDetailsManager(user1, user2);
         JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(datasource);
-        userDetailsManager.createUser(user1);
-        userDetailsManager.createUser(user2);
+        if (!userDetailsManager.userExists(user1.getUsername())) {
+            userDetailsManager.createUser(user1);
+        }
+        if (!userDetailsManager.userExists(user2.getUsername())) {
+            userDetailsManager.createUser(user2);
+        }
         return userDetailsManager;
     }
 }

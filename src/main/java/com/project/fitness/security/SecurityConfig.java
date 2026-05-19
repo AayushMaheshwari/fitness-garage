@@ -23,14 +23,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+// @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private DataSource datasource;
+    // @Autowired
+    // private DataSource datasource;
 
-    @Autowired
-    private AuthTokenFilter authTokenFilter;
+    // @Autowired
+    // private AuthTokenFilter authTokenFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -39,43 +39,47 @@ public class SecurityConfig {
                                 .requestMatchers("/api/recommendations/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/recommendations/**").hasAnyRole("USER", "ADMIN")
                                 .requestMatchers("/api/auth/**").permitAll()
-                                .anyRequest().authenticated()
-                );
-        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
-                // .httpBasic(Customizer.withDefaults());
+                                .requestMatchers("/api/user/register").permitAll()
+                                .anyRequest().authenticated());
+        // http.addFilterBefore(authTokenFilter,
+        // UsernamePasswordAuthenticationFilter.class);
+        // .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user1 = User.withUsername("admin1")
-                .password(passwordEncoder().encode("adminpassword1"))
-                .roles("ADMIN")
-                .build();
+    // @Bean
+    // public UserDetailsService userDetailsService() {
+    // UserDetails user1 = User.withUsername("admin1")
+    // .password(passwordEncoder().encode("adminpassword1"))
+    // .roles("ADMIN")
+    // .build();
 
-        UserDetails user2 = User.withUsername("user1")
-                .password(passwordEncoder().encode("userpassword1"))
-                .roles("USER")
-                .build();
+    // UserDetails user2 = User.withUsername("user1")
+    // .password(passwordEncoder().encode("userpassword1"))
+    // .roles("USER")
+    // .build();
 
-        //return new InMemoryUserDetailsManager(user1, user2);
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(datasource);
-        if (!userDetailsManager.userExists(user1.getUsername())) {
-            userDetailsManager.createUser(user1);
-        }
-        if (!userDetailsManager.userExists(user2.getUsername())) {
-            userDetailsManager.createUser(user2);
-        }
-        return userDetailsManager;
-    }
+    // //return new InMemoryUserDetailsManager(user1, user2);
+    // JdbcUserDetailsManager userDetailsManager = new
+    // JdbcUserDetailsManager(datasource);
+    // if (!userDetailsManager.userExists(user1.getUsername())) {
+    // userDetailsManager.createUser(user1);
+    // }
+    // if (!userDetailsManager.userExists(user2.getUsername())) {
+    // userDetailsManager.createUser(user2);
+    // }
+    // return userDetailsManager;
+    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+    // @Bean
+    // public AuthenticationManager
+    // authenticationManager(AuthenticationConfiguration authConfig) throws
+    // Exception {
+    // return authConfig.getAuthenticationManager();
+    // }
 }

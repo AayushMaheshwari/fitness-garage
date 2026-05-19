@@ -2,10 +2,12 @@ package com.project.fitness.security;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -29,11 +31,10 @@ public class JwtUtils {
         return null;
     }
 
-    public String generateTokenFromUsername(UserDetails userDetails){
-        String userName = userDetails.getUsername();
+    public String generateToken(String userId, String role){
         return Jwts.builder()
-                    .subject(userName)
-                    .claim("roles", userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                    .subject(userId)
+                    .claim("role", List.of("ROLE_" + role))
                     .issuedAt(new Date())
                     .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                     .signWith(key())
